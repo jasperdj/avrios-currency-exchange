@@ -9,6 +9,7 @@ For this project Github projects are used to organize epics/feature/tasks, becau
     ID [Epic - feature] Tasknr. task (R:requirement|S:stretch goal)
 
 ## The beginning
-- 
- 
+- Task 11: create a key value store service
+  - **Why?** The idea was to create an isolated key-value store to store the state of the crawling process, this way in the future this store could be pluggable with an external datastore for improved crash resiliency.
+  - **Why cancelled?** Due to Java's strong typing causing extra layers of casting complexity and its small scope(only one class would use it) this unit was cancelled for the sake of prevention of over-engineering.
 - 
