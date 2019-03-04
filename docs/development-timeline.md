@@ -15,4 +15,6 @@ For this project Github projects are used to organize epics/feature/tasks, becau
 - Task 15: create 'currencyConversionRate' datastore interface and a mock.
   - Future proofing: It is very possible that a new feature may include retrieving a currency conversion rate from an other currency than EURO, to future proof such feature the property `fromCurrencyCode` has been included in the model class CurrencyConversionRate.
   - Question for later: how much impact does the extra property have on the performance of the data store? Is it worth it?
-- 
+  - Insight: to prevent technical dept I must settle on a design documet
+- Task 9: create design document
+  - 
