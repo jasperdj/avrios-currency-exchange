@@ -91,7 +91,7 @@ for date in dataStore.missingDataQueue {
 
 **4.4 public functions and time complexity**
 - 4.4.1 O(1): Add CurrencyConversionRateContainer
-- 4.4.2 0(CD): get CurrencyConversionRate.price from `date`, `fromCurrencyCode` and `toCurrencyCode`
+- 4.4.2 0(1): get a Currency Conversion Rate with parameters `date`, `fromCurrencyCode` and `toCurrencyCode`
 - 4.4.3 0(1): validate if given `fromCurrencyCode` or `toCurrencyCode` has been used in data store for `2.2.1`
 - 4.4.4 O(1): free up a date slot for `5.1.1`
 - 4.4.5 0(1): queue: get unfilled dates for `3.2.2`
@@ -191,15 +191,21 @@ void moveHeadUp() {
 
 4.5.1.8 getMissingValuesUpToDate
 ```
-getMissingValuesInDatesUpToDate(LocalDate date) {
-  // Todo
+List<LocalDate> getMissingValueDatesUpToDate(LocalDate date) {
+  return missingSlots.stream()
+    .map(this::getDateFromIndex)
+    .takeWhile(date -> date.compareTo(headDate) <= 0)
+    .collect(Collectors.toList());
+}
+
+private LocalDate getDateFromIndex(int index) {
+    int differenceInDaysFromHead = Math.abs(index-head) - (index < head ? 0 : size)
+    return headDate.minusDays(differenceInDaysFromHead);
 }
 ```
 
-
 **4.5.2 Test Scenarios**
 - DS is larger than stream can provide
-
 - DS is smaller than stream provides
 
 
