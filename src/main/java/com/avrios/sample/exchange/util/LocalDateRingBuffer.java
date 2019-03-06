@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
@@ -23,8 +24,9 @@ public class LocalDateRingBuffer<N> {
         this.size = size;
         this.slots = new ArrayList<>(Collections.nCopies(size, null));
         this.head = 0;
-        this.missingSlots = new LinkedList<>();
         this.headDate = date;
+        this.missingSlots = new LinkedList<>();
+        IntStream.range(0, size).forEach(x -> missingSlots.add(x));
     }
 
     /**
@@ -38,16 +40,8 @@ public class LocalDateRingBuffer<N> {
 
         if (!index.isPresent()) return Optional.empty();
 
-        boolean dateIsOlderThanHeadDate = date.compareTo(headDate) > 0;
-
-        if (!slotIsAvailable(index.get())) {
-            if (dateIsOlderThanHeadDate) {
-                log.log(Level.WARNING, "no slot is available for date {0}", date);
-                return Optional.empty();
-            } else {
-                log.log(Level.WARNING, "slot {0} will be overwritten", index.get());
-            }
-        }
+        if (!slotIsAvailable(index.get()))
+            log.log(Level.WARNING, "slot {0} will be overwritten", index.get());
 
         return index;
     }
@@ -83,22 +77,20 @@ public class LocalDateRingBuffer<N> {
      * Move the head of the item array up to clear up space for a new date entry
      */
     public void moveHeadUp() {
-        head = head + 1 % size;
+        head = (head + 1) % size;
         headDate = headDate.plusDays(1);
+        if (slots.get(head) != null) missingSlots.add(head);
         slots.set(head, null);
-        missingSlots.add(head);
     }
 
     /**
-     * Get empty item slot dates, up until a given date
+     * Get empty item slot dates
      *
-     * @param date limiting date
      * @return List of dates
      */
-    public List<LocalDate> getEmptyItemSlotDatesUpToDate(LocalDate date) {
+    public List<LocalDate> getEmptyItemSlotDatesUpToDate() {
         return missingSlots.stream()
                 .map(this::getDateFromIndex)
-                .filter(indexDate -> indexDate.compareTo(headDate) <= 0)
                 .collect(Collectors.toList());
     }
 
@@ -109,6 +101,8 @@ public class LocalDateRingBuffer<N> {
      * @return index of item on date
      */
     private Optional<Integer> getIndex(LocalDate date) {
+        if (date.isBefore(headDate.minusDays(size - 1)) || date.isAfter(headDate)) return Optional.empty();
+
         Long daysBetweenDates = DAYS.between(date, headDate);
         if (Math.abs(daysBetweenDates) > size) return Optional.empty();
 

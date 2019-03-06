@@ -10,8 +10,10 @@ import org.powermock.reflect.Whitebox;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -65,6 +67,8 @@ public class LocalDateRingBufferSteps {
             slots.set(i, i);
         }
 
+        Whitebox.setInternalState(ringBuffer, "missingSlots", new LinkedList<>());
+
         setSlots(slots);
     }
 
@@ -102,8 +106,42 @@ public class LocalDateRingBufferSteps {
     @Then("the retrieval results are")
     public void theRetrievalResultsAre(DataTable dataTable) {
         for (int i = 0; i < dataTable.row(0).size(); i++) {
-            assertThat(retrievalResults.get(i).isPresent(), equalTo(true));
-            assertThat(retrievalResults.get(i).get(), equalTo(Integer.valueOf(dataTable.row(0).get(i))));
+            String value = dataTable.row(0).get(i);
+            if (value.equals("null")) {
+                assertThat(retrievalResults.get(i).isPresent(), equalTo(false));
+            } else {
+                assertThat(retrievalResults.get(i).isPresent(), equalTo(true));
+                assertThat(retrievalResults.get(i).get(), equalTo(Integer.valueOf(value)));
+            }
         }
+    }
+
+    @When("Head moves up {int} times")
+    public void headMovesUpTimes(int arg0) {
+        for (int i = 0; i < arg0; i++) {
+            ringBuffer.moveHeadUp();
+        }
+    }
+
+    @Then("head is {int}")
+    public void headIs(int arg0) {
+        assertThat(Whitebox.getInternalState(ringBuffer, "head"), equalTo(arg0));
+    }
+
+    @And("headDate is day: {int} month: {int} year: {int}")
+    public void headdateIsDayMonthYear(int arg0, int arg1, int arg2) {
+        assertThat(Whitebox.getInternalState(ringBuffer, "headDate"),
+                equalTo(LocalDate.of(arg2, arg1, arg0)));
+
+    }
+
+    @And("the following item dates are missing")
+    public void theFollowingItemDatesAreMissing(DataTable dataTable) {
+        List<LocalDate> expectedDates = dataTable.row(0).stream()
+                .map(x -> x.split("-"))
+                .map(x -> LocalDate.of(Integer.valueOf(x[2]), Integer.valueOf(x[1]), Integer.valueOf(x[0])))
+                .collect(Collectors.toList());
+
+        assertThat(ringBuffer.getEmptyItemSlotDatesUpToDate(), equalTo(expectedDates));
     }
 }
