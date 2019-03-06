@@ -1,5 +1,6 @@
 package com.avrios.sample.exchange.util;
 
+import lombok.Getter;
 import lombok.extern.java.Log;
 
 import java.time.LocalDate;
@@ -15,6 +16,7 @@ public class LocalDateRingBuffer<N> {
     private Integer head;
     private Queue<Integer> missingSlots;
     private LocalDate headDate;
+    @Getter
     private int size;
 
     public LocalDateRingBuffer(int size, LocalDate date) {
@@ -107,9 +109,7 @@ public class LocalDateRingBuffer<N> {
      * @return index of item on date
      */
     private Optional<Integer> getIndex(LocalDate date) {
-        if (headDate == null) return Optional.empty();
-
-        Long daysBetweenDates = DAYS.between(headDate, date);
+        Long daysBetweenDates = DAYS.between(date, headDate);
         if (Math.abs(daysBetweenDates) > size) return Optional.empty();
 
         int index = head - daysBetweenDates.intValue();
