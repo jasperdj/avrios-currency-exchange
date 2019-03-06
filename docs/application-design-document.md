@@ -221,11 +221,12 @@ Note: I picked a combined key hashmap instead of nested hashmap. Why?
 Pros: More human readable, this was a priority for this project.
 Cons: If in the future currency combinations are uncertain, performance will suffer because keys are iterated through brute force key generation.
 
+*NOTICE*: I've Isolated these hashset collection in CurrencyConversionRateContainerStore to comply to single responsibility.
 - 6.2.1 Static final String CURRENCY_DELIMITER = "_";
 - 6.2.2 Static final HashSet<String> TO_CURRENCY_CODES = new HashSet<>(); // incl. getter
 - 6.2.3 Static final HashSet<String> FROM_CURRENCY_CODES = new HashSet<>(); // incl. getter
 Why this hashSet, this hashset will be used for REST input validation. 
-Todo: Isolate these hashset collection in other service/class to comply to single responsibility.
+
 - 6.2.4 String xmlHash;
 - 6.2.5 HashMap<String, BigDecimal> currencyConversionRates
 - 6.2.6 getConversionRate
@@ -241,8 +242,6 @@ Optional<BigDecimal> getConversionRate(String fromCurrencyCode, String toCurrenc
 void addConversionRate(String fromCurrencyCode, String toCurrencyCode, BigDecimal price) {
   if (fromCurrencyCode.size() > 0 && toCurrencyCode.size() > 0 && price.compareTo(new BigDecimal("0")) > 0) {
     currencyConversionRates.put(fromCurrencyCode + CURRENCY_DELIMITER + toCurrencyCode, price);
-    TO_CURRENCY_CODES.put(fromCurrencyCode);
-    FROM_CURRENCY_CODES.put(toCurrencyCode);
   }
 }
 ```
