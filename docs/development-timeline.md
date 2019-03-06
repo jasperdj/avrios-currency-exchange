@@ -15,4 +15,7 @@ For this project Github projects are used to organize epics/feature/tasks, becau
 - Task 15: create 'currencyConversionRate' datastore interface and a mock.
   - Future proofing: It is very possible that a new feature may include retrieving a currency conversion rate from an other currency than EURO, to future proof such feature the property `fromCurrencyCode` has been included in the model class CurrencyConversionRate.
   - Question for later: how much impact does the extra property have on the performance of the data store? Is it worth it?
-- 
+  - Insight: to prevent technical dept I must settle on a design documet
+- Task 9: create design document
+  - Insight: once again I'm reminded how important design documents are. By making one I quickly realize that CurrencyConversionRate model is a bad design decision, a combined key hashmap is superior in every way. 
+  - Notice: that the crawler manager isn't as fleshed out as datastore. This is because of AGILE development, I just need to know the basic high level interactions between the datastore and EcbCrawlManager 
