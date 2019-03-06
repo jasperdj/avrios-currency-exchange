@@ -246,3 +246,9 @@ void addConversionRate(String fromCurrencyCode, String toCurrencyCode, BigDecima
   }
 }
 ```
+
+## Classes
+
+CurrencyConversionRateContainerStore: 
+ getConversionRate
+ |-> LocalDateRingBuffer

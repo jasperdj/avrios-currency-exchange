@@ -19,3 +19,4 @@ For this project Github projects are used to organize epics/feature/tasks, becau
 - Task 9: create design document
   - Insight: once again I'm reminded how important design documents are. By making one I quickly realize that CurrencyConversionRate model is a bad design decision, a combined key hashmap is superior in every way. 
   - Notice: that the crawler manager isn't as fleshed out as datastore. This is because of AGILE development, I just need to know the basic high level interactions between the datastore and EcbCrawlManager 
+  - Achievement: I've achieved time complexity O(1) for every data store operation.
