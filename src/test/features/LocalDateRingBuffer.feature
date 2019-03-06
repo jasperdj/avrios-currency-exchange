@@ -52,7 +52,17 @@ Feature: Local date ring buffer
       | null | null | null | null | null |
 
   # RETRIEVE MISSING VALUES
-  Scenario: Retrieve missing item dates when a lot of items are missing
+  Scenario: Retrieve missing item dates for empty ring buffer
+    Given a ring buffer with size 5 is created with Date day: 10  month: 4 year: 2019
+    Then the following item dates are missing
+      | 6-04-2019 | 7-04-2019 | 8-04-2019 | 9-04-2019 | 10-04-2019 |
+
+  Scenario:  Retrieve mising items dates for filled ring buffer
+    Given a ring buffer with size 5 is created with Date day: 10  month: 4 year: 2019
+    And all items in the ring buffer have the same value as their slot index
+    Then no item dates are missing
+
+  Scenario: Retrieve missing item dates when some items are missing
     Given a ring buffer with size 5 is created with Date day: 10  month: 4 year: 2019
     And all items in the ring buffer have the same value as their slot index
     When Head moves up 3 times
@@ -65,4 +75,4 @@ Feature: Local date ring buffer
     And head is 0
     And headDate is day: 15 month: 4 year: 2019
     And the following item dates are missing
-      | 11-04-2019 | 13-04-2019 | 16-04-2019 |
+      | 11-04-2019 | 13-04-2019 | 15-04-2019 |

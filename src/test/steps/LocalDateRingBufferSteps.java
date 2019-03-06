@@ -9,10 +9,7 @@ import io.cucumber.datatable.DataTable;
 import org.powermock.reflect.Whitebox;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -143,5 +140,10 @@ public class LocalDateRingBufferSteps {
                 .collect(Collectors.toList());
 
         assertThat(ringBuffer.getEmptyItemSlotDatesUpToDate(), equalTo(expectedDates));
+    }
+
+    @Then("no item dates are missing")
+    public void noItemDatesAreMissing() {
+        assertThat(ringBuffer.getEmptyItemSlotDatesUpToDate(), equalTo(Collections.EMPTY_LIST));
     }
 }

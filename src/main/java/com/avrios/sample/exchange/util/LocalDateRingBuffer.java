@@ -25,8 +25,8 @@ public class LocalDateRingBuffer<N> {
         this.slots = new ArrayList<>(Collections.nCopies(size, null));
         this.head = 0;
         this.headDate = date;
-        this.missingSlots = new LinkedList<>();
-        IntStream.range(0, size).forEach(x -> missingSlots.add(x));
+
+        instantiateMissingSlots(size);
     }
 
     /**
@@ -40,12 +40,11 @@ public class LocalDateRingBuffer<N> {
 
         if (!index.isPresent()) return Optional.empty();
 
-        if (!slotIsAvailable(index.get()))
+        if (!missingSlots.contains(index.get()))
             log.log(Level.WARNING, "slot {0} will be overwritten", index.get());
 
         return index;
     }
-
 
     /**
      * Unchecked item insertion, please call canAddOnDate first!
@@ -59,7 +58,6 @@ public class LocalDateRingBuffer<N> {
         if (!missingSlots.remove(index))
             log.log(Level.WARNING, "index {0} was not found in missing slots!", index);
     }
-
 
     /**
      * Get item at date
@@ -94,6 +92,12 @@ public class LocalDateRingBuffer<N> {
                 .collect(Collectors.toList());
     }
 
+    private void instantiateMissingSlots(int size) {
+        this.missingSlots = new LinkedList<>();
+        IntStream.range(1, size).forEach(x -> missingSlots.add(x));
+        missingSlots.add(0);
+    }
+
     /**
      * Get index for given date
      *
@@ -113,12 +117,9 @@ public class LocalDateRingBuffer<N> {
     }
 
     private LocalDate getDateFromIndex(int index) {
-        int differenceInDaysFromHead = Math.abs(index - head) - (index < head ? 0 : size);
+        // Todo: simplify calculation
+        int differenceInDaysFromHead = Math.abs(Math.abs(index - head) - (index <= head ? 0 : size));
         return headDate.minusDays(differenceInDaysFromHead);
-    }
-
-    private boolean slotIsAvailable(int index) {
-        return missingSlots.contains(index);
     }
 
 }
