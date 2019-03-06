@@ -17,29 +17,12 @@ public class LocalDateRingBuffer<N> {
     private LocalDate headDate;
     private int size;
 
-    public LocalDateRingBuffer(int size) {
+    public LocalDateRingBuffer(int size, LocalDate date) {
         this.size = size;
-        this.slots = new ArrayList<>();
+        this.slots = new ArrayList<>(Collections.nCopies(size, null));
         this.head = 0;
         this.missingSlots = new LinkedList<>();
-    }
-
-    /**
-     * Get index for given date
-     *
-     * @param date date
-     * @return index of item on date
-     */
-    public Optional<Integer> getIndex(LocalDate date) {
-        if (headDate == null) return Optional.empty();
-
-        Long daysBetweenDates = DAYS.between(headDate, date);
-        if (Math.abs(daysBetweenDates) > size) return Optional.empty();
-
-        int index = head - daysBetweenDates.intValue();
-        if (index < 0) index += size;
-
-        return Optional.of(index);
+        this.headDate = date;
     }
 
     /**
@@ -115,6 +98,24 @@ public class LocalDateRingBuffer<N> {
                 .map(this::getDateFromIndex)
                 .filter(indexDate -> indexDate.compareTo(headDate) <= 0)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Get index for given date
+     *
+     * @param date date
+     * @return index of item on date
+     */
+    private Optional<Integer> getIndex(LocalDate date) {
+        if (headDate == null) return Optional.empty();
+
+        Long daysBetweenDates = DAYS.between(headDate, date);
+        if (Math.abs(daysBetweenDates) > size) return Optional.empty();
+
+        int index = head - daysBetweenDates.intValue();
+        if (index < 0) index += size;
+
+        return Optional.of(index);
     }
 
     private LocalDate getDateFromIndex(int index) {
