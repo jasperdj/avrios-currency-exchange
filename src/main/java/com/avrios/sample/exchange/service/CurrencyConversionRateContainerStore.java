@@ -4,7 +4,7 @@ import com.avrios.sample.exchange.domain.model.CurrencyConversionRateContainer;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Optional;
 
 /**
@@ -19,7 +19,7 @@ public interface CurrencyConversionRateContainerStore {
      * @param toCurrencyCode   code I.E. USD
      * @return optional conversion rate price
      */
-    Optional<BigDecimal> getConversionRatePrice(LocalDate date, String fromCurrencyCode, String toCurrencyCode);
+    Optional<BigDecimal> getConversionRate(LocalDate date, String fromCurrencyCode, String toCurrencyCode);
 
     /**
      * Add conversion rate container
@@ -27,15 +27,15 @@ public interface CurrencyConversionRateContainerStore {
      * @param container container to add
      * @return boolean indicating whether adding was successful
      */
-    boolean addConversionRateContainer(CurrencyConversionRateContainer container);
+    boolean addConversionRateContainer(LocalDate date, CurrencyConversionRateContainer container);
 
     /**
      * @return 'from' currency codes that currently exists in the store
      */
-    List<String> getFromCurrencyCodes();
+    HashSet<String> getFromCurrencyCodes();
 
     /**
      * @return 'to' currency codes that currently exists in the store
      */
-    List<String> getToCurrencyCodes();
+    HashSet<String> getToCurrencyCodes();
 }

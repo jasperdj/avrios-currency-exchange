@@ -1,6 +1,6 @@
 Feature: currency conversion store
 
-  # RETRIEVING DATA
+  # GET CONVERSION RATE
   Scenario: requested rate is succesfully requested
     Given currency conversion store contains the following entries
       | fromCurrencyCode | toCurrencyCode | date     | price |

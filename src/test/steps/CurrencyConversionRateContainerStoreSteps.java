@@ -7,9 +7,10 @@ import cucumber.api.java.en.When;
 import io.cucumber.datatable.DataTable;
 
 // Todo: complete test methods
-public class CurrencyConversionRateStoreSteps {
+public class CurrencyConversionRateContainerStoreSteps {
     @Given("currency conversion store contains the following entries")
     public void currencyConversionStoreContainsTheFollowingEntries(DataTable dataTable) {
+
     }
 
 
