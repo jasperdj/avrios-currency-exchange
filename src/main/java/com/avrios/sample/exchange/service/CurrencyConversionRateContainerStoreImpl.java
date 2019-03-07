@@ -15,6 +15,7 @@ public class CurrencyConversionRateContainerStoreImpl implements CurrencyConvers
     private LocalDateRingBuffer<CurrencyConversionRateContainer> buffer;
     private HashSet<String> fromCurrencyCodes = new HashSet<>();
     private HashSet<String> toCurrencyCodes = new HashSet<>();
+    // todo: setup configurationProperties
     @Value("${service.CurrencyConversionRateContainerStore.sizeInDays}")
     private Integer sizeInDays = 90;
 
