@@ -68,6 +68,57 @@ for date in dataStore.missingDataQueue {
 }
 ```
 
+- 3.2.3 classes
+- 3.2.3.1 EcbCurrencyConversionRateClientService with https://github.com/AsyncHttpClient/async-http-client
+Will contain all the streams, async handler, timeout handler
+success
+timeout/error
+- 3.2.3.1.1 public void retrieveXmlFileForStream(EcbCurrencyConversionRateStream stream, Consumer<File> success, Consumer<String> failure)
+- 3.2.3.1.2 public EcbCurrencyConversionRateStream getSmallestStreamForDayWindow(Integer amountOfDays)
+
+- 3.2.3.2 EcbCurrencyConversionRateXmlParserService with default JAVA api xml parser
+- 3.2.3.2.1 public List<CurrencyConversionRateContainer> getMissingCurrencyConversionRateContainers(List<LocalDate> missingDates, File xmlFile)
+- 3.2.3.2.2 public List<CurrencyConversionRateContainer> getUpdatedCurrencyConversionRateContainers(HashMap<LocalDate, String> dateHashes)
+
+- 3.2.3.3 EcbCrawlManager
+- 3.2.3.3.0 instantiation
+```
+@Autowired
+public EcbCrawlManger(CurrencyConversionRateContainerStore store, 
+   EcbCurrencyConversionRateXmlParserService parser, EcbCurrencyConversionRateClientService ecbClient) {
+  etc.    
+   
+}
+```
+
+
+- 3.2.3.3.1 public void attemptCrawl() with Scheduled cron expression
+```
+@Scheduled(cron = "${EcbCawlManager.attemptCrawlMissingDatesCron}")
+public void attemptCrawlMissingDates() {
+    List<LocalDate> missingDates = store.getMissingDates();
+    
+    if (missingDates.size() > 0) {
+      Integer dayWindow = DAYS.between(store.getHeadDate(), missingDates.get(0));
+      EcbCurrencyConversionRateStream stream =  ecbClient.getSmallestStreamForDayWindow(dayWindow)
+      
+      ecbClient.retrieveXmlFileForStream(stream, 
+        xmlFile -> {
+            List<CurrencyConversionRateContainer> containers = parser.getMissingCurrencyConversionRateContainers(missingDates, xmlFile);
+            store.addConversionRateContainers(containers);
+        }, 
+        error -> {
+          log.error("Could not retrieve xml file!")
+        })
+    }
+}
+
+
+```
+
+
+
+
 ## 4. Data store
 **4.1 Requirements**
 - 4.1.1 To comply to `2.1.1` and `2.1.2` able to retrieve BigDecimal conversion price based on date, fromCurrency and toCurrency.

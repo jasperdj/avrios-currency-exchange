@@ -21,5 +21,7 @@ For this project Github projects are used to organize epics/feature/tasks, becau
   - Notice: that the crawler manager isn't as fleshed out as datastore. This is because of AGILE development, I just need to know the basic high level interactions between the datastore and EcbCrawlManager 
   - Achievement: I've achieved time complexity O(1) for every data store operation.
 - Task 10: implement data store with BDD
-  - Achievement: 92% line coverage  
--
+  - Test coverage LocalDateRingBuffer: 92% line coverage  
+  - Test coverage CurrencyConversionRateContainerStore: 95% line coverage
+  - Test coverage currencyConversionRateContainer: 92% line coverage
+- 
