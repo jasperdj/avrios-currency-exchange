@@ -26,4 +26,6 @@ For this project Github projects are used to organize epics/feature/tasks, becau
   - Test coverage currencyConversionRateContainer: 92% line coverage
 - Task 2: Fetch Xml File
   - Problem: ECB 90 day stream actually has 88 days
+- Task 3: Validate Xml file
+  - 
   
