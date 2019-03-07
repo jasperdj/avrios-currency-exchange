@@ -20,9 +20,16 @@ import java.util.logging.Level;
 public class EcbCurrencyConversionRateXmlParserService {
 
     public Optional<List<CurrencyConversionRateContainer>> getMissingCurrencyConversionRateContainers(List<LocalDate> missingDates, String xmlString) {
-        return getXmlDocument(xmlString)
-                .map(this::getCubeNode)
-                .map(x -> Collections.emptyList());
+        Optional<Document> xmlDocument = getXmlDocument(xmlString);
+        if (xmlDocument.isPresent()) {
+            Optional<Node> cubeNode = getCubeNode(xmlDocument.get());
+
+            if (cubeNode.isPresent()) {
+                return Optional.of(Collections.EMPTY_LIST);
+            }
+        }
+
+        return Optional.empty();
     }
 
     private Optional<Document> getXmlDocument(String xmlString) {
