@@ -46,6 +46,7 @@ public class EcbCurrencyConversionRateXmlParserService {
         return Optional.empty();
     }
 
+    //Todo: add XSD validation
     private Optional<Node> getCubeNode(Document document) {
         NodeList rootchildNodes = document.getDocumentElement().getChildNodes();
 
