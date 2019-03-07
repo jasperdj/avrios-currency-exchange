@@ -12,7 +12,7 @@ public class CurrencyConversionRateContainer {
     static final String CURRENCY_DELIMITER = "_";
 
     private String xmlHash;
-    private HashMap<String, BigDecimal> currencyConversionRates;
+    private HashMap<String, BigDecimal> currencyConversionRates = new HashMap<>();
     private HashSet<String> toCurrencyCodes = new HashSet<>();
     private HashSet<String> fromCurrencyCodes = new HashSet<>();
 
@@ -24,7 +24,7 @@ public class CurrencyConversionRateContainer {
 
     public void addConversionRate(String fromCurrencyCode, String toCurrencyCode, BigDecimal price) {
         currencyConversionRates.put(fromCurrencyCode + CURRENCY_DELIMITER + toCurrencyCode, price);
-        toCurrencyCodes.add(fromCurrencyCode);
+        toCurrencyCodes.add(toCurrencyCode);
         fromCurrencyCodes.add(fromCurrencyCode);
     }
 
