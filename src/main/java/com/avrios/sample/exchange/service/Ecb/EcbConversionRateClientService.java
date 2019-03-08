@@ -9,10 +9,10 @@ import org.asynchttpclient.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import static org.asynchttpclient.Dsl.asyncHttpClient;
 import static org.asynchttpclient.Dsl.config;
@@ -35,12 +35,10 @@ public class EcbConversionRateClientService {
                 .setMaxRequestRetry(this.ecbProperties.getClient().getMaxRetries())
                 .setAcceptAnyCertificate(true));
 
-        // Todo: make this configurable from application.yml
-        streams = new ArrayList<>();
-        streams.add(new EcbConversionRateStream(90,
-                "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml"));
-        streams.add(new EcbConversionRateStream(1,
-                "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml"));
+        streams = ecbProperties.getClient().getStreams()
+                .stream()
+                .map(x -> new EcbConversionRateStream(Integer.parseInt(x.get("dayWindow")), x.get("url")))
+                .collect(Collectors.toList());
     }
 
     /**
