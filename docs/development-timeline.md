@@ -27,5 +27,7 @@ For this project Github projects are used to organize epics/feature/tasks, becau
 - Task 2: Fetch Xml File
   - Problem: ECB 90 day stream actually has 88 days
 - Task 3: Validate Xml file
-  - 
+  - Insight: in the future XSD validation could replace basic validation
+- Task 4: Extract data from Xml
+  - Insight: current extraction method with java standard api is very verbose, everyone on stackoverflow is suggesting to stick to Java's API, but I'm sure there are better methods available.
   

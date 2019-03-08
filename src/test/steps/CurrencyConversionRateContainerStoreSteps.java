@@ -33,7 +33,7 @@ public class CurrencyConversionRateContainerStoreSteps {
         for (int row = 1; row < dataTable.height(); row++) {
             List<String> columns = dataTable.row(row);
             LocalDate date = stringToDate(columns.get(2));
-            CurrencyConversionRateContainer container = new CurrencyConversionRateContainer();
+            CurrencyConversionRateContainer container = new CurrencyConversionRateContainer("");
             container.addConversionRate(columns.get(0), columns.get(1), new BigDecimal(columns.get(3)));
 
             //todo: fix default value overriding
@@ -64,7 +64,7 @@ public class CurrencyConversionRateContainerStoreSteps {
     public void currencyConversionRateIsAddedWithTheFollowingProperties(DataTable dataTable) {
         List<String> row = dataTable.row(1);
         LocalDate date = stringToDate(row.get(2));
-        CurrencyConversionRateContainer container = new CurrencyConversionRateContainer();
+        CurrencyConversionRateContainer container = new CurrencyConversionRateContainer("");
         container.addConversionRate(row.get(0), row.get(1), new BigDecimal(row.get(3)));
 
         store.addConversionRateContainer(date, container);
