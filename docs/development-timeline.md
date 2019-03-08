@@ -31,3 +31,7 @@ For this project Github projects are used to organize epics/feature/tasks, becau
 - Task 4: Extract data from Xml
   - Insight: current extraction method with java standard api is very verbose, everyone on stackoverflow is suggesting to stick to Java's API, but I'm sure there are better methods available.
 - Task 5: Create crawler manager
+- Task 12: create API 
+  - Problem: So far I've tested normalized xml input in my unit tests, with real data I found that when using a String to load a dom document normalize and normalizeDocument does not remove line breaks. Unsure whether bug in Java API or \n is this case is not seen as text that must be normalized. 
+  - Solution: Normalize with String operations.
+  
