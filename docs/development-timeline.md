@@ -30,4 +30,5 @@ For this project Github projects are used to organize epics/feature/tasks, becau
   - Insight: in the future XSD validation could replace basic validation
 - Task 4: Extract data from Xml
   - Insight: current extraction method with java standard api is very verbose, everyone on stackoverflow is suggesting to stick to Java's API, but I'm sure there are better methods available.
-  
+- Task 5: Create crawler manager
+  - 

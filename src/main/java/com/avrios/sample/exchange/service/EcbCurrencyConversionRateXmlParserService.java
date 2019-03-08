@@ -43,8 +43,8 @@ public class EcbCurrencyConversionRateXmlParserService {
         }
     }
 
-    public void findAndProcessMissingCurrencyConversionRateContainers(List<LocalDate> missingDates,
-                                                                      String xmlString, BiConsumer<CurrencyConversionRateContainer, LocalDate> processor) {
+    public void process(List<LocalDate> missingDates,
+                        String xmlString, BiConsumer<CurrencyConversionRateContainer, LocalDate> processor) {
         Optional<Document> xmlDocument = getXmlDocument(xmlString);
         if (xmlDocument.isPresent()) {
             Optional<NodeList> dateNodes = getDateNodes(xmlDocument.get());

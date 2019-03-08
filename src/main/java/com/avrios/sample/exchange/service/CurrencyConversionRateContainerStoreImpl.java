@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 
 @Service("CurrencyConversionRateContainerStore")
@@ -35,7 +36,7 @@ public class CurrencyConversionRateContainerStoreImpl implements CurrencyConvers
     }
 
     @Override
-    public boolean addConversionRateContainer(LocalDate date, CurrencyConversionRateContainer container) {
+    public boolean addConversionRateContainer(CurrencyConversionRateContainer container, LocalDate date) {
         Optional<Integer> optionalIndex = buffer.canAddOnDate(date);
 
         if (optionalIndex.isPresent()) {
@@ -59,5 +60,15 @@ public class CurrencyConversionRateContainerStoreImpl implements CurrencyConvers
     @Override
     public HashSet<String> getToCurrencyCodes() {
         return toCurrencyCodes;
+    }
+
+    @Override
+    public LocalDate getHeadDate() {
+        return buffer.getHeadDate();
+    }
+
+    @Override
+    public List<LocalDate> getMissingDates() {
+        return buffer.getEmptyItemSlotDates();
     }
 }
