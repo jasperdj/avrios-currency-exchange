@@ -7,9 +7,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Data
 public class EcbProperties {
 
-    private Client client;
-    private Manager manager;
-    private Parser parser;
+    private Client client = new Client();
+    private Manager manager = new Manager();
+    private Parser parser = new Parser();
 
     @Data
     public class Client {

@@ -10,8 +10,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableScheduling
 @EnableConfigurationProperties({
-        AppProperties.class,
-        EcbProperties.class
+        EcbProperties.class,
+        AppProperties.class
+
 })
 public class Application {
 

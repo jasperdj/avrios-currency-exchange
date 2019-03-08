@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Data
 @ConfigurationProperties("app")
 public class AppProperties {
-    private ConversionRateStore conversionRateStore;
+    private ConversionRateStore conversionRateStore = new ConversionRateStore();
 
     @Data
     public static class ConversionRateStore {
