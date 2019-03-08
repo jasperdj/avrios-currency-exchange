@@ -1,6 +1,7 @@
 package com.avrios.sample.exchange.service.Ecb;
 
-import com.avrios.sample.exchange.domain.model.EcbConversionRateStream;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.extern.java.Log;
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.Response;
@@ -23,7 +24,6 @@ public class EcbConversionRateClientService {
 
     @Value("${service.EcbConversionRateClientService.connectionTimeout}")
     private Integer connectionTimeout = 5000;
-
     @Value("${service.EcbConversionRateClientService.maxRetries}")
     private Integer maxRetries = 5;
 
@@ -36,12 +36,19 @@ public class EcbConversionRateClientService {
 
         // Todo: make this configurable from application.properties
         streams = new ArrayList<>();
-        streams.add(new EcbConversionRateStream(88,
+        streams.add(new EcbConversionRateStream(90,
                 "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml"));
         streams.add(new EcbConversionRateStream(1,
                 "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml"));
     }
 
+    /**
+     * Retrieve Xml file by Day window
+     *
+     * @param amountOfDays amount of days in the past that you seek to fetch for.
+     * @param success      function parameter to process the result
+     * @param failure      result function
+     */
     public void retrieveXmlFileDayWindow(Integer amountOfDays, Consumer<String> success, Consumer<String> failure) {
         EcbConversionRateStream stream = getSmallestStreamForDayWindow(amountOfDays);
 
@@ -70,5 +77,11 @@ public class EcbConversionRateClientService {
                 );
     }
 
+}
 
+@Data
+@AllArgsConstructor
+class EcbConversionRateStream {
+    private int days;
+    private String url;
 }

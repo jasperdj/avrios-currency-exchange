@@ -58,6 +58,7 @@ public class LocalDateRingBuffer<N> {
      */
     public void add(Integer index, N item) {
         slots.set(index, item);
+        missingSlots.remove(index);
     }
 
     /**

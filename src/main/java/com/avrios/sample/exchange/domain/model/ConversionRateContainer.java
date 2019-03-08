@@ -11,13 +11,11 @@ import java.util.Optional;
 public class ConversionRateContainer {
     static final String CURRENCY_DELIMITER = "_";
 
-    private String xmlHash;
     private HashMap<String, BigDecimal> currencyConversionRates = new HashMap<>();
     private HashSet<String> toCurrencyCodes = new HashSet<>();
     private HashSet<String> fromCurrencyCodes = new HashSet<>();
 
-    public ConversionRateContainer(String xmlHash) {
-        this.xmlHash = xmlHash;
+    public ConversionRateContainer() {
     }
 
     public Optional<BigDecimal> getConversionRate(String fromCurrencyCode, String toCurrencyCode) {
