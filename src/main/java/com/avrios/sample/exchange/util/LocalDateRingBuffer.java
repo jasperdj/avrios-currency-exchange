@@ -16,6 +16,7 @@ public class LocalDateRingBuffer<N> {
     private List<N> slots;
     private Integer head;
     private Queue<Integer> missingSlots;
+    @Getter
     private LocalDate headDate;
     @Getter
     private int size;
@@ -86,7 +87,7 @@ public class LocalDateRingBuffer<N> {
      *
      * @return List of dates
      */
-    public List<LocalDate> getEmptyItemSlotDatesUpToDate() {
+    public List<LocalDate> getEmptyItemSlotDates() {
         return missingSlots.stream()
                 .map(this::getDateFromIndex)
                 .collect(Collectors.toList());

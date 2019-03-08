@@ -67,7 +67,7 @@ public class CurrencyConversionRateContainerStoreSteps {
         CurrencyConversionRateContainer container = new CurrencyConversionRateContainer("");
         container.addConversionRate(row.get(0), row.get(1), new BigDecimal(row.get(3)));
 
-        store.addConversionRateContainer(date, container);
+        store.addConversionRateContainer(container, date);
     }
 
 

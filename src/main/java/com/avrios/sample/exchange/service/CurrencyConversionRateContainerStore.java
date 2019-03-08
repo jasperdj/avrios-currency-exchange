@@ -5,6 +5,7 @@ import com.avrios.sample.exchange.domain.model.CurrencyConversionRateContainer;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -27,7 +28,7 @@ public interface CurrencyConversionRateContainerStore {
      * @param container container to add
      * @return boolean indicating whether adding was successful
      */
-    boolean addConversionRateContainer(LocalDate date, CurrencyConversionRateContainer container);
+    boolean addConversionRateContainer(CurrencyConversionRateContainer container, LocalDate date);
 
     /**
      * @return 'from' currency codes that currently exists in the store
@@ -40,4 +41,14 @@ public interface CurrencyConversionRateContainerStore {
     HashSet<String> getToCurrencyCodes();
 
 
+    /**
+     * @return the date that is associated to the head, a.k.a. the newest/oldest date in the buffer.
+     */
+    LocalDate getHeadDate();
+
+
+    /**
+     * @return the dates associated to the empty slots in the buffer.
+     */
+    List<LocalDate> getMissingDates();
 }

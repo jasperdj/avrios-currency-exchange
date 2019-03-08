@@ -37,7 +37,7 @@ public class EcbCurrencyConversionRateXmlParserSteps {
 
     @When("an invalid xml is given to be parsed")
     public void anInvalidXmlIsGivenToBeParsed() {
-        parser.findAndProcessMissingCurrencyConversionRateContainers(missingDates, invalidXml, this::processContainers);
+        parser.process(missingDates, invalidXml, this::processContainers);
     }
 
     @Then("no containers are processed")
@@ -47,7 +47,7 @@ public class EcbCurrencyConversionRateXmlParserSteps {
 
     @When("an valid xml is given to be parsed")
     public void anValidXmlIsGivenToBeParsed() {
-        parser.findAndProcessMissingCurrencyConversionRateContainers(missingDates, validXml, this::processContainers);
+        parser.process(missingDates, validXml, this::processContainers);
 
     }
 
@@ -102,7 +102,7 @@ public class EcbCurrencyConversionRateXmlParserSteps {
 
     @When("the xml is parsed")
     public void theXmlIsParsed() {
-        parser.findAndProcessMissingCurrencyConversionRateContainers(missingDates, xml, this::processContainers);
+        parser.process(missingDates, xml, this::processContainers);
     }
 
     @Then("the following containers are processed")

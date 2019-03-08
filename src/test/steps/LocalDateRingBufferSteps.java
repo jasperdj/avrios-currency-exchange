@@ -139,11 +139,11 @@ public class LocalDateRingBufferSteps {
                 .map(x -> LocalDate.of(Integer.valueOf(x[2]), Integer.valueOf(x[1]), Integer.valueOf(x[0])))
                 .collect(Collectors.toList());
 
-        assertThat(ringBuffer.getEmptyItemSlotDatesUpToDate(), equalTo(expectedDates));
+        assertThat(ringBuffer.getEmptyItemSlotDates(), equalTo(expectedDates));
     }
 
     @Then("no item dates are missing")
     public void noItemDatesAreMissing() {
-        assertThat(ringBuffer.getEmptyItemSlotDatesUpToDate(), equalTo(Collections.EMPTY_LIST));
+        assertThat(ringBuffer.getEmptyItemSlotDates(), equalTo(Collections.EMPTY_LIST));
     }
 }

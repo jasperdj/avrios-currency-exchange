@@ -6,6 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.math.BigDecimal;
+
 @Controller
 public class SampleController {
 
@@ -13,8 +15,8 @@ public class SampleController {
 
     @ResponseBody
     @RequestMapping("/api/hello")
-    public String helloWorld() {
+    public BigDecimal helloWorld() {
         log.debug("Logging works!");
-        return "Hello World!";
+        return new BigDecimal("5");
     }
 }
