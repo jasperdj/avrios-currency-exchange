@@ -1,8 +1,9 @@
 package com.avrios.sample.exchange.service.Ecb;
 
+import com.avrios.sample.exchange.configuration.EcbProperties;
 import com.avrios.sample.exchange.domain.model.ConversionRateContainer;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -24,15 +25,9 @@ import java.util.logging.Level;
 
 @Log
 @Service("EcbCurrencyConversionRateXmlParserService")
+@RequiredArgsConstructor
 public class EcbConversionRateXmlParserService {
-    @Value("${service.EcbConversionRateXmlParserService.timeAttributeName}")
-    private final String timeAttributeName = "time";
-    @Value("${service.EcbConversionRateXmlParserService.currencyAttributeName}")
-    private final String currencyAttributeName = "currency";
-    @Value("${service.EcbConversionRateXmlParserService.rateAttributeName}")
-    private final String rateAttributeName = "rate";
-    @Value("${service.EcbConversionRateXmlParserService.defaultFromCurrencyCode}")
-    private final String defaultFromCurrencyCode = "EURO";
+    private final EcbProperties properties;
 
     /**
      * Process xml
@@ -60,7 +55,7 @@ public class EcbConversionRateXmlParserService {
         int missingDatesIndex = 0;
         for (int i = dateNodes.getLength() - 1; i >= 0; i--) {
             Node dateNode = dateNodes.item(i);
-            String date = getAttr(dateNode, timeAttributeName);
+            String date = getAttr(dateNode, properties.getParser().getTimeAttributeName());
 
             while (thereAreMissingDatesLeft(missingDates, missingDatesIndex) &&
                     dateHasPassedMissingDate(missingDates, missingDatesIndex, date)) {
@@ -89,10 +84,11 @@ public class EcbConversionRateXmlParserService {
     private void extractRates(ConversionRateContainer container, NodeList currencyConversionNodes) {
         for (int i = 0; i < currencyConversionNodes.getLength(); i++) {
             Node currencyConversionNode = currencyConversionNodes.item(i);
-            String toCurrencyCode = getAttr(currencyConversionNode, currencyAttributeName);
-            BigDecimal rate = new BigDecimal(getAttr(currencyConversionNode, rateAttributeName));
+            String toCurrencyCode = getAttr(currencyConversionNode, properties.getParser().getCurrencyAttributeName());
+            BigDecimal rate = new BigDecimal(
+                    getAttr(currencyConversionNode, properties.getParser().getRateAttributeName()));
 
-            container.addConversionRate(defaultFromCurrencyCode, toCurrencyCode, rate);
+            container.addConversionRate(properties.getParser().getDefaultFromCurrencyCode(), toCurrencyCode, rate);
         }
     }
 
