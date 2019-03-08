@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -24,8 +24,10 @@ public class CurrencyConversionController {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    @ResponseBody
-    @RequestMapping("/euro-currency-conversion/{date}/{toCurrencyCode}/")
+    @RequestMapping(
+            value = "/euro-currency-conversion/{date}/{toCurrencyCode}/",
+            method = RequestMethod.GET,
+            produces = "application/json")
     public ResponseEntity<BigDecimal> euroCurrencyConversion(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @PathVariable("date") LocalDate date,
             @PathVariable("toCurrencyCode") String toCurrencyCode) {
@@ -33,8 +35,10 @@ public class CurrencyConversionController {
         return currencyConversion(date, "EURO", toCurrencyCode);
     }
 
-    @ResponseBody
-    @RequestMapping("/currency-conversion/{date}/{fromCurrencyCode}/{toCurrencyCode}/")
+    @RequestMapping(
+            value = "/currency-conversion/{date}/{fromCurrencyCode}/{toCurrencyCode}/",
+            method = RequestMethod.GET,
+            produces = "application/json")
     public ResponseEntity<BigDecimal> currencyConversion(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @PathVariable("date") LocalDate date,
             @PathVariable("fromCurrencyCode") String fromCurrencyCode,
