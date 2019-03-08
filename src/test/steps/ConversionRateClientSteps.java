@@ -1,5 +1,6 @@
 package steps;
 
+import com.avrios.sample.exchange.configuration.EcbProperties;
 import com.avrios.sample.exchange.service.Ecb.EcbConversionRateClientService;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -12,7 +13,8 @@ import static org.hamcrest.core.IsEqual.equalTo;
 
 public class ConversionRateClientSteps {
     private String xmlString;
-    private EcbConversionRateClientService client = new EcbConversionRateClientService();
+    private EcbProperties ecbProperties = new EcbProperties();
+    private EcbConversionRateClientService client = new EcbConversionRateClientService(ecbProperties);
     private boolean failure = false;
 
     @When("xml string is requested for a {int} day window")
