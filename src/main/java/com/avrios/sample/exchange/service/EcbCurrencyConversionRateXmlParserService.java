@@ -2,6 +2,7 @@ package com.avrios.sample.exchange.service;
 
 import com.avrios.sample.exchange.domain.model.CurrencyConversionRateContainer;
 import lombok.extern.java.Log;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -10,26 +11,101 @@ import org.xml.sax.InputSource;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.StringReader;
+import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
-import java.util.Collections;
+import java.time.format.DateTimeFormatter;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.logging.Level;
 
 @Log
+@Service("EcbCurrencyConversionRateXmlParserService")
 public class EcbCurrencyConversionRateXmlParserService {
 
-    public Optional<List<CurrencyConversionRateContainer>> getMissingCurrencyConversionRateContainers(List<LocalDate> missingDates, String xmlString) {
+    // Todo: add to properties file
+    private final String timeAttributeName = "time";
+    private final String currencyAttributeName = "currency";
+    private final String rateAttributeName = "rate";
+    private final String defaultFromCurrencyCode = "EURO";
+    private MessageDigest md;
+
+
+    public EcbCurrencyConversionRateXmlParserService() {
+        try {
+            md = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            log.log(Level.SEVERE, e.toString());
+        }
+    }
+
+    public void findAndProcessMissingCurrencyConversionRateContainers(List<LocalDate> missingDates,
+                                                                      String xmlString, BiConsumer<CurrencyConversionRateContainer, LocalDate> processor) {
         Optional<Document> xmlDocument = getXmlDocument(xmlString);
         if (xmlDocument.isPresent()) {
-            Optional<Node> cubeNode = getCubeNode(xmlDocument.get());
+            Optional<NodeList> dateNodes = getDateNodes(xmlDocument.get());
 
-            if (cubeNode.isPresent()) {
-                return Optional.of(Collections.EMPTY_LIST);
+            if (dateNodes.isPresent()) {
+                processContainers(missingDates, dateNodes.get(), processor);
+            }
+        }
+    }
+
+    private List<CurrencyConversionRateContainer> processContainers(List<LocalDate> missingDates,
+                                                                    NodeList dateNodes, BiConsumer<CurrencyConversionRateContainer, LocalDate> processor) {
+        List<CurrencyConversionRateContainer> containers = new LinkedList<>();
+
+        int missingDatesIndex = 0;
+        for (int i = dateNodes.getLength() - 1; i >= 0 && missingDatesIndex < missingDates.size(); i--) {
+            Node dateNode = dateNodes.item(i);
+            String date = getAttr(dateNode, timeAttributeName);
+            LocalDate missingDate = missingDates.get(missingDatesIndex);
+
+            if (date.equals(getDateString(missingDate))) {
+                processor.accept(extractContainer(dateNode), missingDate);
             }
         }
 
-        return Optional.empty();
+        return containers;
+    }
+
+    private CurrencyConversionRateContainer extractContainer(Node dateNode) {
+        String md5Hash = getMd5Hash(dateNode.getTextContent());
+        CurrencyConversionRateContainer container = new CurrencyConversionRateContainer(md5Hash);
+        NodeList currencyConversionNodes = dateNode.getChildNodes();
+
+        extractRates(container, currencyConversionNodes);
+
+        return container;
+    }
+
+    private void extractRates(CurrencyConversionRateContainer container, NodeList currencyConversionNodes) {
+        for (int i = 0; i < currencyConversionNodes.getLength(); i++) {
+            Node currencyConversionNode = currencyConversionNodes.item(i);
+            String toCurrencyCode = getAttr(currencyConversionNode, currencyAttributeName);
+            BigDecimal rate = new BigDecimal(getAttr(currencyConversionNode, rateAttributeName));
+
+            container.addConversionRate(defaultFromCurrencyCode, toCurrencyCode, rate);
+        }
+    }
+
+    private String getAttr(Node node, String string) {
+        return node.getAttributes().getNamedItem(string).getNodeValue();
+    }
+
+    // Todo: create util class
+    private String getMd5Hash(String string) {
+        byte[] digest = md.digest(string.getBytes(StandardCharsets.UTF_8));
+
+        return new String(digest, StandardCharsets.UTF_8);
+    }
+
+    private String getDateString(LocalDate date) {
+        return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 
     private Optional<Document> getXmlDocument(String xmlString) {
@@ -47,13 +123,13 @@ public class EcbCurrencyConversionRateXmlParserService {
     }
 
     //Todo: add XSD validation
-    private Optional<Node> getCubeNode(Document document) {
+    private Optional<NodeList> getDateNodes(Document document) {
         NodeList rootchildNodes = document.getDocumentElement().getChildNodes();
 
         if (rootchildNodes.getLength() == 3) {
             Node cubeContainer = rootchildNodes.item(2);
             if (cubeContainer.getNodeName().equals("Cube") && cubeContainer.hasChildNodes())
-                return Optional.of(cubeContainer);
+                return Optional.of(cubeContainer.getChildNodes());
         }
 
         return Optional.empty();

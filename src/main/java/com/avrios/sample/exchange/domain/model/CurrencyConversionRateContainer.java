@@ -16,14 +16,18 @@ public class CurrencyConversionRateContainer {
     private HashSet<String> toCurrencyCodes = new HashSet<>();
     private HashSet<String> fromCurrencyCodes = new HashSet<>();
 
+    public CurrencyConversionRateContainer(String xmlHash) {
+        this.xmlHash = xmlHash;
+    }
+
     public Optional<BigDecimal> getConversionRate(String fromCurrencyCode, String toCurrencyCode) {
         String key = fromCurrencyCode + CURRENCY_DELIMITER + toCurrencyCode;
 
         return Optional.ofNullable(currencyConversionRates.get(key));
     }
 
-    public void addConversionRate(String fromCurrencyCode, String toCurrencyCode, BigDecimal price) {
-        currencyConversionRates.put(fromCurrencyCode + CURRENCY_DELIMITER + toCurrencyCode, price);
+    public void addConversionRate(String fromCurrencyCode, String toCurrencyCode, BigDecimal rate) {
+        currencyConversionRates.put(fromCurrencyCode + CURRENCY_DELIMITER + toCurrencyCode, rate);
         toCurrencyCodes.add(toCurrencyCode);
         fromCurrencyCodes.add(fromCurrencyCode);
     }

@@ -6,11 +6,12 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.core.IsEqual.equalTo;
 
 public class EcbCurrencyConversionRateXmlParserSteps {
@@ -21,26 +22,32 @@ public class EcbCurrencyConversionRateXmlParserSteps {
             LocalDate.of(2019, 3, 7),
             LocalDate.of(2019, 3, 6));
 
-    private Optional<List<CurrencyConversionRateContainer>> containersResult;
+    private List<CurrencyConversionRateContainer> containersResults = new ArrayList<>();
+    private List<LocalDate> containerDateResults = new ArrayList<>();
 
     @When("an invalid xml is given to be parsed")
     public void anInvalidXmlIsGivenToBeParsed() {
-        containersResult = parser.getMissingCurrencyConversionRateContainers(missingDates, invalidXml);
+        parser.findAndProcessMissingCurrencyConversionRateContainers(missingDates, invalidXml, this::processContainers);
     }
 
     @Then("a empty optional is returned")
     public void aEmptyOptionalIsReturned() {
-        assertThat(containersResult, equalTo(Optional.empty()));
+        assertThat(containersResults.size(), equalTo(0));
     }
 
     @When("an valid xml is given to be parsed")
     public void anValidXmlIsGivenToBeParsed() {
-        containersResult = parser.getMissingCurrencyConversionRateContainers(missingDates, validXml);
+        parser.findAndProcessMissingCurrencyConversionRateContainers(missingDates, validXml, this::processContainers);
 
     }
 
     @Then("a list is returned")
     public void aListIsReturned() {
-        assertThat(containersResult.isPresent(), equalTo(true));
+        assertThat(containersResults.size(), greaterThan(0));
+    }
+
+    private void processContainers(CurrencyConversionRateContainer container, LocalDate date) {
+        containersResults.add(container);
+        containerDateResults.add(date);
     }
 }
