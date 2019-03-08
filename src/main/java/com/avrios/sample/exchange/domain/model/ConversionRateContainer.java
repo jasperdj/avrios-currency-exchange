@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Optional;
 
 @Data
-public class CurrencyConversionRateContainer {
+public class ConversionRateContainer {
     static final String CURRENCY_DELIMITER = "_";
 
     private String xmlHash;
@@ -16,7 +16,7 @@ public class CurrencyConversionRateContainer {
     private HashSet<String> toCurrencyCodes = new HashSet<>();
     private HashSet<String> fromCurrencyCodes = new HashSet<>();
 
-    public CurrencyConversionRateContainer(String xmlHash) {
+    public ConversionRateContainer(String xmlHash) {
         this.xmlHash = xmlHash;
     }
 

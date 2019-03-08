@@ -1,7 +1,7 @@
 package steps;
 
-import com.avrios.sample.exchange.domain.model.CurrencyConversionRateContainer;
-import com.avrios.sample.exchange.service.CurrencyConversionRateContainerStoreImpl;
+import com.avrios.sample.exchange.domain.model.ConversionRateContainer;
+import com.avrios.sample.exchange.service.ConversionRateContainerStoreImpl;
 import com.avrios.sample.exchange.util.LocalDateRingBuffer;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -21,19 +21,19 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 // Todo: complete test methods
-public class CurrencyConversionRateContainerStoreSteps {
-    private CurrencyConversionRateContainerStoreImpl store = new CurrencyConversionRateContainerStoreImpl();
+public class ConversionRateContainerStoreSteps {
+    private ConversionRateContainerStoreImpl store = new ConversionRateContainerStoreImpl();
     private Optional<BigDecimal> returnedPrice;
 
     @Given("currency conversion store contains the following entries")
     public void currencyConversionStoreContainsTheFollowingEntries(DataTable dataTable) {
-        LocalDateRingBuffer<CurrencyConversionRateContainer> buffer = mock(LocalDateRingBuffer.class);
+        LocalDateRingBuffer<ConversionRateContainer> buffer = mock(LocalDateRingBuffer.class);
         when(buffer.canAddOnDate(anyObject())).thenReturn(Optional.of(1));
 
         for (int row = 1; row < dataTable.height(); row++) {
             List<String> columns = dataTable.row(row);
             LocalDate date = stringToDate(columns.get(2));
-            CurrencyConversionRateContainer container = new CurrencyConversionRateContainer("");
+            ConversionRateContainer container = new ConversionRateContainer("");
             container.addConversionRate(columns.get(0), columns.get(1), new BigDecimal(columns.get(3)));
 
             //todo: fix default value overriding
@@ -64,7 +64,7 @@ public class CurrencyConversionRateContainerStoreSteps {
     public void currencyConversionRateIsAddedWithTheFollowingProperties(DataTable dataTable) {
         List<String> row = dataTable.row(1);
         LocalDate date = stringToDate(row.get(2));
-        CurrencyConversionRateContainer container = new CurrencyConversionRateContainer("");
+        ConversionRateContainer container = new ConversionRateContainer("");
         container.addConversionRate(row.get(0), row.get(1), new BigDecimal(row.get(3)));
 
         store.addConversionRateContainer(container, date);

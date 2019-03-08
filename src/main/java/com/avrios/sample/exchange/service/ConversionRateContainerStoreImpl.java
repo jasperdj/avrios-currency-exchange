@@ -1,6 +1,6 @@
 package com.avrios.sample.exchange.service;
 
-import com.avrios.sample.exchange.domain.model.CurrencyConversionRateContainer;
+import com.avrios.sample.exchange.domain.model.ConversionRateContainer;
 import com.avrios.sample.exchange.util.LocalDateRingBuffer;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,23 +15,23 @@ import java.util.Observable;
 import java.util.Optional;
 
 @Service("CurrencyConversionRateContainerStore")
-public class CurrencyConversionRateContainerStoreImpl implements CurrencyConversionRateContainerStore {
-    private LocalDateRingBuffer<CurrencyConversionRateContainer> buffer;
+public class ConversionRateContainerStoreImpl implements ConversionRateContainerStore {
+    private LocalDateRingBuffer<ConversionRateContainer> buffer;
     private HashSet<String> fromCurrencyCodes = new HashSet<>();
     private HashSet<String> toCurrencyCodes = new HashSet<>();
     @Getter
     private Observable headMovedUp;
     // todo: setup configurationProperties
-    @Value("${service.CurrencyConversionRateContainerStore.sizeInDays}")
+    @Value("${service.ConversionRateContainerStore.sizeInDays}")
     private Integer sizeInDays = 90;
 
-    public CurrencyConversionRateContainerStoreImpl() {
+    public ConversionRateContainerStoreImpl() {
         buffer = new LocalDateRingBuffer<>(sizeInDays, LocalDate.now().minusDays(1));
     }
 
     @Override
     public Optional<BigDecimal> getConversionRate(LocalDate date, String fromCurrencyCode, String toCurrencyCode) {
-        Optional<CurrencyConversionRateContainer> optionalItem = buffer.getItemAtDate(date);
+        Optional<ConversionRateContainer> optionalItem = buffer.getItemAtDate(date);
 
         if (optionalItem.isPresent()) {
             return optionalItem.get().getConversionRate(fromCurrencyCode, toCurrencyCode);
@@ -41,7 +41,7 @@ public class CurrencyConversionRateContainerStoreImpl implements CurrencyConvers
     }
 
     @Override
-    public boolean addConversionRateContainer(CurrencyConversionRateContainer container, LocalDate date) {
+    public boolean addConversionRateContainer(ConversionRateContainer container, LocalDate date) {
         Optional<Integer> optionalIndex = buffer.canAddOnDate(date);
 
         if (optionalIndex.isPresent()) {
@@ -77,7 +77,7 @@ public class CurrencyConversionRateContainerStoreImpl implements CurrencyConvers
         return buffer.getEmptyItemSlotDates();
     }
 
-    @Scheduled(cron = "${service.CurrencyConversionRateContainerStoreImpl.moveUpHeadCron}")
+    @Scheduled(cron = "${service.ConversionRateContainerStoreImpl.moveUpHeadCron}")
     private void moveUpHead() {
         buffer.moveHeadUp();
     }

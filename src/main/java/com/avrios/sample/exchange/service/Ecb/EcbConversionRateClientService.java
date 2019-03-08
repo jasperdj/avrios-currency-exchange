@@ -1,6 +1,6 @@
-package com.avrios.sample.exchange.service;
+package com.avrios.sample.exchange.service.Ecb;
 
-import com.avrios.sample.exchange.domain.model.EcbCurrencyConversionRateStream;
+import com.avrios.sample.exchange.domain.model.EcbConversionRateStream;
 import lombok.extern.java.Log;
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.Response;
@@ -17,17 +17,17 @@ import static org.asynchttpclient.Dsl.config;
 
 @Service("EcbCurrencyConversionRateClientService")
 @Log
-public class EcbCurrencyConversionRateClientService {
-    private List<EcbCurrencyConversionRateStream> streams;
+public class EcbConversionRateClientService {
+    private List<EcbConversionRateStream> streams;
     private AsyncHttpClient asyncHttpClient;
 
-    @Value("${service.EcbCurrencyConversionRateClientService.connectionTimeout}")
+    @Value("${service.EcbConversionRateClientService.connectionTimeout}")
     private Integer connectionTimeout = 5000;
 
-    @Value("${service.EcbCurrencyConversionRateClientService.maxRetries}")
+    @Value("${service.EcbConversionRateClientService.maxRetries}")
     private Integer maxRetries = 5;
 
-    public EcbCurrencyConversionRateClientService() {
+    public EcbConversionRateClientService() {
         // Todo: implement SSL certificates
         asyncHttpClient = asyncHttpClient(config()
                 .setConnectTimeout(connectionTimeout)
@@ -36,14 +36,14 @@ public class EcbCurrencyConversionRateClientService {
 
         // Todo: make this configurable from application.properties
         streams = new ArrayList<>();
-        streams.add(new EcbCurrencyConversionRateStream(88,
+        streams.add(new EcbConversionRateStream(88,
                 "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml"));
-        streams.add(new EcbCurrencyConversionRateStream(1,
+        streams.add(new EcbConversionRateStream(1,
                 "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml"));
     }
 
     public void retrieveXmlFileDayWindow(Integer amountOfDays, Consumer<String> success, Consumer<String> failure) {
-        EcbCurrencyConversionRateStream stream = getSmallestStreamForDayWindow(amountOfDays);
+        EcbConversionRateStream stream = getSmallestStreamForDayWindow(amountOfDays);
 
         asyncHttpClient
                 .prepareGet(stream.getUrl())
@@ -58,14 +58,14 @@ public class EcbCurrencyConversionRateClientService {
                 .join();
     }
 
-    private EcbCurrencyConversionRateStream getSmallestStreamForDayWindow(Integer amountOfDays) {
+    private EcbConversionRateStream getSmallestStreamForDayWindow(Integer amountOfDays) {
         // Todo: solve ugly nesting
         return streams.stream()
                 .filter(x -> x.getDays() >= amountOfDays)
-                .min(Comparator.comparing(EcbCurrencyConversionRateStream::getDays))
+                .min(Comparator.comparing(EcbConversionRateStream::getDays))
                 .orElse(
                         streams.stream()
-                                .max(Comparator.comparing(EcbCurrencyConversionRateStream::getDays))
+                                .max(Comparator.comparing(EcbConversionRateStream::getDays))
                                 .get()
                 );
     }

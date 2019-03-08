@@ -1,6 +1,6 @@
 package steps;
 
-import com.avrios.sample.exchange.service.EcbCurrencyConversionRateClientService;
+import com.avrios.sample.exchange.service.Ecb.EcbConversionRateClientService;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 
@@ -10,9 +10,9 @@ import java.time.format.DateTimeFormatter;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 
-public class CurrencyConversionRateClientSteps {
+public class ConversionRateClientSteps {
     private String xmlString;
-    private EcbCurrencyConversionRateClientService client = new EcbCurrencyConversionRateClientService();
+    private EcbConversionRateClientService client = new EcbConversionRateClientService();
     private boolean failure = false;
 
     @When("xml string is requested for a {int} day window")
