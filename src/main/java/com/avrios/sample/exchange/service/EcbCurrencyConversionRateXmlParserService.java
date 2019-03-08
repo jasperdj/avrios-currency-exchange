@@ -4,6 +4,7 @@ import com.avrios.sample.exchange.domain.model.CurrencyConversionRateContainer;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -64,7 +65,8 @@ public class EcbCurrencyConversionRateXmlParserService {
             Node dateNode = dateNodes.item(i);
             String date = getAttr(dateNode, timeAttributeName);
 
-            while (getDate(date).isAfter(missingDates.get(missingDatesIndex))) {
+            while (!getDate(date).isEqual(missingDates.get(missingDatesIndex)) &&
+                    getDate(date).isAfter(missingDates.get(missingDatesIndex))) {
                 missingDatesIndex++;
             }
 
@@ -131,7 +133,8 @@ public class EcbCurrencyConversionRateXmlParserService {
         try {
             builder = factory.newDocumentBuilder();
             InputSource is = new InputSource(new StringReader(xmlString));
-            return Optional.of(builder.parse(is));
+            Document document = builder.parse(is);
+            return Optional.of(document);
         } catch (Exception e) {
             log.log(Level.SEVERE, e.toString());
         }
@@ -141,7 +144,8 @@ public class EcbCurrencyConversionRateXmlParserService {
 
     //Todo: add XSD validation
     private Optional<NodeList> getDateNodes(Document document) {
-        NodeList rootchildNodes = document.getDocumentElement().getChildNodes();
+        Element documentElement = document.getDocumentElement();
+        NodeList rootchildNodes = documentElement.getChildNodes();
 
         if (rootchildNodes.getLength() == 3) {
             Node cubeContainer = rootchildNodes.item(2);
