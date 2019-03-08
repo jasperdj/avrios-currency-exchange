@@ -25,8 +25,10 @@ Here you'll find my implementation of the exercise, to showcase some of my exper
 ## What would you do if you would spend more time on this project?
 1. Efficient polling (now it's simply a cronjob)
   - Automaticly determining the update timeframe of the external service.
-2. Docker-compose file
+2. Run from Docker-compose file
 3. Cloud deployment configuration
-4. Clearing away some minor technical dept
+4. SSL certificates
+5. Cronjob: Data consistency check.
+6. End to end test by mocking the external API
 
 Feel free to leave a code review :)

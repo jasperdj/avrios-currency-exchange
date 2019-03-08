@@ -2,6 +2,7 @@ package com.avrios.sample.exchange.service.Ecb;
 
 import com.avrios.sample.exchange.domain.model.ConversionRateContainer;
 import lombok.extern.java.Log;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -13,9 +14,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.StringReader;
 import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
@@ -27,23 +25,22 @@ import java.util.logging.Level;
 @Log
 @Service("EcbCurrencyConversionRateXmlParserService")
 public class EcbConversionRateXmlParserService {
-
-    // Todo: add to properties file
+    @Value("${service.EcbConversionRateXmlParserService.timeAttributeName}")
     private final String timeAttributeName = "time";
+    @Value("${service.EcbConversionRateXmlParserService.currencyAttributeName}")
     private final String currencyAttributeName = "currency";
+    @Value("${service.EcbConversionRateXmlParserService.rateAttributeName}")
     private final String rateAttributeName = "rate";
+    @Value("${service.EcbConversionRateXmlParserService.defaultFromCurrencyCode}")
     private final String defaultFromCurrencyCode = "EURO";
-    private MessageDigest md;
 
-
-    public EcbConversionRateXmlParserService() {
-        try {
-            md = MessageDigest.getInstance("MD5");
-        } catch (NoSuchAlgorithmException e) {
-            log.log(Level.SEVERE, e.toString());
-        }
-    }
-
+    /**
+     * Process xml
+     *
+     * @param missingDates the missing dates it will be seeking to fill
+     * @param xmlString    xml string
+     * @param processor    function parameter to process/send the ConversionRateContainers to its destination
+     */
     public void process(List<LocalDate> missingDates,
                         String xmlString, BiConsumer<ConversionRateContainer, LocalDate> processor) {
         Optional<Document> xmlDocument = getXmlDocument(xmlString);
@@ -81,8 +78,7 @@ public class EcbConversionRateXmlParserService {
     }
 
     private ConversionRateContainer extractContainer(Node dateNode) {
-        String md5Hash = getMd5Hash(dateNode.getTextContent());
-        ConversionRateContainer container = new ConversionRateContainer(md5Hash);
+        ConversionRateContainer container = new ConversionRateContainer();
         NodeList currencyConversionNodes = dateNode.getChildNodes();
 
         extractRates(container, currencyConversionNodes);
@@ -104,18 +100,10 @@ public class EcbConversionRateXmlParserService {
         return node.getAttributes().getNamedItem(string).getNodeValue();
     }
 
-    // Todo: create util class
-    private String getMd5Hash(String string) {
-        byte[] digest = md.digest(string.getBytes(StandardCharsets.UTF_8));
-
-        return new String(digest, StandardCharsets.UTF_8);
-    }
-
     private String getDateString(LocalDate date) {
         return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 
-    // Todo: create util class
     private LocalDate getDate(String string) {
         String[] components = string.split("-");
 

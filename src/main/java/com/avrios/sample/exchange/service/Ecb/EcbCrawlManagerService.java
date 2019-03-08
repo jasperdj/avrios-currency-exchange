@@ -30,7 +30,8 @@ public class EcbCrawlManagerService {
             Integer dayWindow = ((Long) DAYS.between(missingDates.get(0), store.getHeadDate())).intValue();
 
             ecbClient.retrieveXmlFileDayWindow(dayWindow,
-                    xml -> parser.process(missingDates, xml.replaceAll("[\\r\\n]", ""), store::addConversionRateContainer),
+                    xml -> parser.process(missingDates, xml.replaceAll("[\\r\\n]", ""),
+                            store::addConversionRateContainer),
                     error -> log.log(Level.SEVERE, "Could not retrieve xml file!"));
         }
     }
