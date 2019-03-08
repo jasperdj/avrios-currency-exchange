@@ -22,7 +22,7 @@ public class ConversionRateContainerStoreImpl implements ConversionRateContainer
     @Getter
     private Observable headMovedUp;
     // todo: setup configurationProperties
-    @Value("${service.CurrencyConversionRateContainerStore.sizeInDays}")
+    @Value("${service.ConversionRateContainerStore.sizeInDays}")
     private Integer sizeInDays = 90;
 
     public ConversionRateContainerStoreImpl() {

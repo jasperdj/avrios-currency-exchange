@@ -65,7 +65,7 @@ public class EcbConversionRateXmlParserService {
             Node dateNode = dateNodes.item(i);
             String date = getAttr(dateNode, timeAttributeName);
 
-            while (missingDatesIndex < missingDates.size() &&
+            while (missingDatesIndex < missingDates.size() - 1 &&
                     !getDate(date).isEqual(missingDates.get(missingDatesIndex)) &&
                     getDate(date).isAfter(missingDates.get(missingDatesIndex))) {
                 missingDatesIndex++;

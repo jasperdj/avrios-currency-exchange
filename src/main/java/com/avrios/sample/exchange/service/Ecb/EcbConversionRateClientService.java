@@ -21,10 +21,10 @@ public class EcbConversionRateClientService {
     private List<EcbConversionRateStream> streams;
     private AsyncHttpClient asyncHttpClient;
 
-    @Value("${service.EcbCurrencyConversionRateClientService.connectionTimeout}")
+    @Value("${service.EcbConversionRateClientService.connectionTimeout}")
     private Integer connectionTimeout = 5000;
 
-    @Value("${service.EcbCurrencyConversionRateClientService.maxRetries}")
+    @Value("${service.EcbConversionRateClientService.maxRetries}")
     private Integer maxRetries = 5;
 
     public EcbConversionRateClientService() {

@@ -1,6 +1,6 @@
 package com.avrios.sample.exchange.controller;
 
-import com.avrios.sample.exchange.service.CurrencyConversionRateContainerStore;
+import com.avrios.sample.exchange.service.ConversionRateContainerStore;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,8 +19,8 @@ import java.util.Optional;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/api")
-public class CurrencyConversionController {
-    private final CurrencyConversionRateContainerStore store;
+public class ConversionRateController {
+    private final ConversionRateContainerStore store;
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
