@@ -63,10 +63,16 @@ public class EcbCurrencyConversionRateXmlParserService {
         for (int i = dateNodes.getLength() - 1; i >= 0 && missingDatesIndex < missingDates.size(); i--) {
             Node dateNode = dateNodes.item(i);
             String date = getAttr(dateNode, timeAttributeName);
+
+            while (getDate(date).isAfter(missingDates.get(missingDatesIndex))) {
+                missingDatesIndex++;
+            }
+
             LocalDate missingDate = missingDates.get(missingDatesIndex);
 
             if (date.equals(getDateString(missingDate))) {
                 processor.accept(extractContainer(dateNode), missingDate);
+                missingDatesIndex++;
             }
         }
 
@@ -106,6 +112,17 @@ public class EcbCurrencyConversionRateXmlParserService {
 
     private String getDateString(LocalDate date) {
         return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    }
+
+    // Todo: create util class
+    private LocalDate getDate(String string) {
+        String[] components = string.split("-");
+
+        return LocalDate.of(
+                Integer.valueOf(components[0]),
+                Integer.valueOf(components[1]),
+                Integer.valueOf(components[2])
+        );
     }
 
     private Optional<Document> getXmlDocument(String xmlString) {
