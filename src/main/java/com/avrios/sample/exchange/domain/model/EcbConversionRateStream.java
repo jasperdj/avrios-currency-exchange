@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class EcbCurrencyConversionRateStream {
+public class EcbConversionRateStream {
     private int days;
     private String url;
 }

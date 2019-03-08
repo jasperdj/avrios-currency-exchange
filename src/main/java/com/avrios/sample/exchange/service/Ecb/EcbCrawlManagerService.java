@@ -1,5 +1,6 @@
-package com.avrios.sample.exchange.service;
+package com.avrios.sample.exchange.service.Ecb;
 
+import com.avrios.sample.exchange.service.ConversionRateContainerStoreImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -15,9 +16,9 @@ import static java.time.temporal.ChronoUnit.DAYS;
 @RequiredArgsConstructor
 @Log
 public class EcbCrawlManagerService {
-    private final CurrencyConversionRateContainerStoreImpl store;
-    private final EcbCurrencyConversionRateClientService ecbClient;
-    private final EcbCurrencyConversionRateXmlParserService parser;
+    private final ConversionRateContainerStoreImpl store;
+    private final EcbConversionRateClientService ecbClient;
+    private final EcbConversionRateXmlParserService parser;
 
     @Scheduled(cron = "${service.EcbCrawlManager.attemptCrawlMissingDatesCron}")
     public void attemptCrawlMissingDates() {

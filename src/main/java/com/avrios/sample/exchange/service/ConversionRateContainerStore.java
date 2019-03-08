@@ -1,6 +1,6 @@
 package com.avrios.sample.exchange.service;
 
-import com.avrios.sample.exchange.domain.model.CurrencyConversionRateContainer;
+import com.avrios.sample.exchange.domain.model.ConversionRateContainer;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * CurrencyConversionRateContainerStore, store that manages all currencyConversionRate storage specific operations.
+ * ConversionRateContainerStore, store that manages all currencyConversionRate storage specific operations.
  */
-public interface CurrencyConversionRateContainerStore {
+public interface ConversionRateContainerStore {
     /**
      * Get Conversion Rate Price
      *
@@ -28,7 +28,7 @@ public interface CurrencyConversionRateContainerStore {
      * @param container container to add
      * @return boolean indicating whether adding was successful
      */
-    boolean addConversionRateContainer(CurrencyConversionRateContainer container, LocalDate date);
+    boolean addConversionRateContainer(ConversionRateContainer container, LocalDate date);
 
     /**
      * @return 'from' currency codes that currently exists in the store
