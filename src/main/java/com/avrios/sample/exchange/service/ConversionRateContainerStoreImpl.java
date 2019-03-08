@@ -4,7 +4,6 @@ import com.avrios.sample.exchange.domain.model.ConversionRateContainer;
 import com.avrios.sample.exchange.util.LocalDateRingBuffer;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -26,7 +25,7 @@ public class ConversionRateContainerStoreImpl implements ConversionRateContainer
     private Integer sizeInDays = 90;
 
     public ConversionRateContainerStoreImpl() {
-        buffer = new LocalDateRingBuffer<>(sizeInDays, LocalDate.now().minusDays(1));
+        buffer = new LocalDateRingBuffer<>(sizeInDays, LocalDate.now().minusDays(10));
     }
 
     @Override
@@ -75,11 +74,6 @@ public class ConversionRateContainerStoreImpl implements ConversionRateContainer
     @Override
     public List<LocalDate> getMissingDates() {
         return buffer.getEmptyItemSlotDates();
-    }
-
-    @Scheduled(cron = "${service.ConversionRateContainerStoreImpl.moveUpHeadCron}")
-    private void moveUpHead() {
-        buffer.moveHeadUp();
     }
 
 }

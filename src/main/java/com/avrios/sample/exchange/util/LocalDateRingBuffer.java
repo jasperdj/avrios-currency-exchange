@@ -5,7 +5,6 @@ import lombok.extern.java.Log;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -39,10 +38,14 @@ public class LocalDateRingBuffer<N> {
     public Optional<Integer> canAddOnDate(LocalDate date) {
         Optional<Integer> index = getIndex(date);
 
-        if (!index.isPresent()) return Optional.empty();
+        if (!index.isPresent()) {
+            if (headShouldMoveUp(date)) {
+                moveHeadUp(DAYS.between(headDate, date));
+                return Optional.of(head);
+            }
 
-        if (!missingSlots.contains(index.get()))
-            log.log(Level.WARNING, "slot {0} will be overwritten", index.get());
+            return Optional.empty();
+        }
 
         return index;
     }
@@ -55,9 +58,6 @@ public class LocalDateRingBuffer<N> {
      */
     public void add(Integer index, N item) {
         slots.set(index, item);
-
-        if (!missingSlots.remove(index))
-            log.log(Level.WARNING, "index {0} was not found in missing slots!", index);
     }
 
     /**
@@ -80,6 +80,10 @@ public class LocalDateRingBuffer<N> {
         headDate = headDate.plusDays(1);
         if (slots.get(head) != null) missingSlots.add(head);
         slots.set(head, null);
+    }
+
+    public void moveHeadUp(long times) {
+        for (int i = 0; i < times; i++) moveHeadUp();
     }
 
     /**
@@ -121,6 +125,10 @@ public class LocalDateRingBuffer<N> {
         // Todo: simplify calculation
         int differenceInDaysFromHead = Math.abs(Math.abs(index - head) - (index <= head ? 0 : size));
         return headDate.minusDays(differenceInDaysFromHead);
+    }
+
+    private boolean headShouldMoveUp(LocalDate date) {
+        return (date.isEqual(LocalDate.now()) || date.isBefore(LocalDate.now())) && headDate.isBefore(date);
     }
 
 }
