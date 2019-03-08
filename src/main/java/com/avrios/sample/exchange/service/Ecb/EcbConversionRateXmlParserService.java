@@ -61,21 +61,19 @@ public class EcbConversionRateXmlParserService {
         List<ConversionRateContainer> containers = new LinkedList<>();
 
         int missingDatesIndex = 0;
-        for (int i = dateNodes.getLength() - 1; i >= 0 && missingDatesIndex < missingDates.size(); i--) {
+        for (int i = dateNodes.getLength() - 1; i >= 0; i--) {
             Node dateNode = dateNodes.item(i);
             String date = getAttr(dateNode, timeAttributeName);
 
-            while (missingDatesIndex < missingDates.size() - 1 &&
-                    !getDate(date).isEqual(missingDates.get(missingDatesIndex)) &&
-                    getDate(date).isAfter(missingDates.get(missingDatesIndex))) {
+            while (thereAreMissingDatesLeft(missingDates, missingDatesIndex) &&
+                    dateHasPassedMissingDate(missingDates, missingDatesIndex, date)) {
                 missingDatesIndex++;
             }
 
             LocalDate missingDate = missingDates.get(missingDatesIndex);
 
-            if (date.equals(getDateString(missingDate))) {
-                processor.accept(extractContainer(dateNode), missingDate);
-                missingDatesIndex++;
+            if (dateIsEqualToMissingDate(date, missingDate) || noMissingDatesLeft(missingDates, missingDatesIndex)) {
+                processor.accept(extractContainer(dateNode), getDate(date));
             }
         }
 
@@ -143,17 +141,38 @@ public class EcbConversionRateXmlParserService {
         return Optional.empty();
     }
 
-    //Todo: add XSD validation
     private Optional<NodeList> getDateNodes(Document document) {
         Element documentElement = document.getDocumentElement();
         NodeList rootchildNodes = documentElement.getChildNodes();
 
         if (rootchildNodes.getLength() == 3) {
-            Node cubeContainer = rootchildNodes.item(2);
-            if (cubeContainer.getNodeName().equals("Cube") && cubeContainer.hasChildNodes())
-                return Optional.of(cubeContainer.getChildNodes());
+            Node dateContainer = rootchildNodes.item(2);
+            if (xmlIsValid(dateContainer))
+                return Optional.of(dateContainer.getChildNodes());
         }
 
         return Optional.empty();
+    }
+
+    // Syntactic sugar
+    private boolean dateHasPassedMissingDate(List<LocalDate> missingDates, int missingDatesIndex, String date) {
+        return !getDate(date).isEqual(missingDates.get(missingDatesIndex)) &&
+                getDate(date).isAfter(missingDates.get(missingDatesIndex));
+    }
+
+    private boolean thereAreMissingDatesLeft(List<LocalDate> missingDates, int missingDatesIndex) {
+        return missingDatesIndex < missingDates.size() - 1;
+    }
+
+    private boolean dateIsEqualToMissingDate(String date, LocalDate missingDate) {
+        return date.equals(getDateString(missingDate));
+    }
+
+    private boolean noMissingDatesLeft(List<LocalDate> missingDates, int missingDatesIndex) {
+        return missingDatesIndex == missingDates.size() - 1;
+    }
+
+    private boolean xmlIsValid(Node cubeContainer) {
+        return cubeContainer.getNodeName().equals("Cube") && cubeContainer.hasChildNodes();
     }
 }
