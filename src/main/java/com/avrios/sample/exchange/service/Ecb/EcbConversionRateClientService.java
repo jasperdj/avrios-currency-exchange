@@ -35,7 +35,7 @@ public class EcbConversionRateClientService {
                 .setMaxRequestRetry(this.ecbProperties.getClient().getMaxRetries())
                 .setAcceptAnyCertificate(true));
 
-        // Todo: make this configurable from application.properties
+        // Todo: make this configurable from application.yml
         streams = new ArrayList<>();
         streams.add(new EcbConversionRateStream(90,
                 "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml"));
