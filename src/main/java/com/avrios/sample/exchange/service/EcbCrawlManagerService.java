@@ -19,8 +19,10 @@ public class EcbCrawlManagerService {
     private final EcbCurrencyConversionRateClientService ecbClient;
     private final EcbCurrencyConversionRateXmlParserService parser;
 
-    @Scheduled(cron = "${EcbCawlManager.attemptCrawlMissingDatesCron}")
+    @Scheduled(cron = "${service.EcbCrawlManager.attemptCrawlMissingDatesCron}")
     public void attemptCrawlMissingDates() {
+        log.log(Level.INFO, "Attempted crawl of missing dates");
+
         List<LocalDate> missingDates = store.getMissingDates();
 
         if (missingDates.size() > 0) {
