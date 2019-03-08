@@ -1,6 +1,6 @@
 package steps;
 
-import com.avrios.sample.exchange.configuration.ConversionRateStoreProperties;
+import com.avrios.sample.exchange.configuration.AppProperties;
 import com.avrios.sample.exchange.domain.model.ConversionRateContainer;
 import com.avrios.sample.exchange.service.ConversionRateContainerStoreImpl;
 import com.avrios.sample.exchange.util.LocalDateRingBuffer;
@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
 
 // Todo: complete test methods
 public class ConversionRateContainerStoreSteps {
-    private ConversionRateStoreProperties properties = new ConversionRateStoreProperties();
+    private AppProperties properties = new AppProperties();
     private ConversionRateContainerStoreImpl store = new ConversionRateContainerStoreImpl(properties);
     private Optional<BigDecimal> returnedPrice;
 

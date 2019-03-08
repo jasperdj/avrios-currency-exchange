@@ -1,6 +1,6 @@
 package com.avrios.sample.exchange.service;
 
-import com.avrios.sample.exchange.configuration.ConversionRateStoreProperties;
+import com.avrios.sample.exchange.configuration.AppProperties;
 import com.avrios.sample.exchange.domain.model.ConversionRateContainer;
 import com.avrios.sample.exchange.util.LocalDateRingBuffer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,16 +14,17 @@ import java.util.Optional;
 
 @Service("CurrencyConversionRateContainerStore")
 public class ConversionRateContainerStoreImpl implements ConversionRateContainerStore {
-    private final ConversionRateStoreProperties properties;
+    private final AppProperties properties;
 
     private LocalDateRingBuffer<ConversionRateContainer> buffer;
     private HashSet<String> fromCurrencyCodes = new HashSet<>();
     private HashSet<String> toCurrencyCodes = new HashSet<>();
 
     @Autowired
-    public ConversionRateContainerStoreImpl(ConversionRateStoreProperties properties) {
+    public ConversionRateContainerStoreImpl(AppProperties properties) {
         this.properties = properties;
-        buffer = new LocalDateRingBuffer<>(this.properties.getSizeInDays(), LocalDate.now());
+        int sizeInDays = this.properties.getConversionRateStore().getSizeInDays();
+        buffer = new LocalDateRingBuffer<>(sizeInDays, LocalDate.now());
     }
 
     @Override

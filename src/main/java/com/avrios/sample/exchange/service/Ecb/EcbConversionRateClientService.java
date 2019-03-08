@@ -7,7 +7,6 @@ import lombok.extern.java.Log;
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.Response;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,11 +24,6 @@ public class EcbConversionRateClientService {
 
     private List<EcbConversionRateStream> streams;
     private AsyncHttpClient asyncHttpClient;
-
-    @Value("${service.EcbConversionRateClientService.connectionTimeout}")
-    private Integer connectionTimeout = 5000;
-    @Value("${service.EcbConversionRateClientService.maxRetries}")
-    private Integer maxRetries = 5;
 
     @Autowired
     public EcbConversionRateClientService(EcbProperties ecbProperties) {
