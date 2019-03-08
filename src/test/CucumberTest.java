@@ -15,5 +15,5 @@ import org.powermock.modules.junit4.PowerMockRunnerDelegate;
         ""
 })
 @PrepareForTest()
-public class CucumberTestRunner {
+public class CucumberTest {
 }
