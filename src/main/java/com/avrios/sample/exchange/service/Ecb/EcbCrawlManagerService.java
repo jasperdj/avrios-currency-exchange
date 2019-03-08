@@ -20,7 +20,7 @@ public class EcbCrawlManagerService {
     private final EcbConversionRateClientService ecbClient;
     private final EcbConversionRateXmlParserService parser;
 
-    @Scheduled(cron = "${service.EcbCrawlManager.attemptCrawlMissingDatesCron}")
+    @Scheduled(cron = "${ecb.manager.crawl-cron}")
     public void attemptCrawlMissingDates() {
         log.log(Level.INFO, "Attempted crawl of missing dates");
 
