@@ -1,7 +1,17 @@
 {
   "configuration": {
-    "name": "log",
+    "name": "log-socket",
     "appenders": {
+      "Socket": {
+        "name": "socket",
+        "host": "localhost",
+        "port": "9500",
+        "JSONLayout": {
+          "complete": false,
+          "compact": true,
+          "eventEol": false
+        }
+      },
       "Console": {
         "name": "console",
         "LevelRangeFilter": {
@@ -17,6 +27,21 @@
       }
     },
     "loggers": {
+      "AsyncLogger": [
+        {
+          "name": "com.avrios.sample.exchange",
+          "level": "trace",
+          "additivity": "false",
+          "appender-ref": [
+            {
+              "ref": "socket"
+            },
+            {
+              "ref": "console"
+            }
+          ]
+        }
+      ],
       "root": {
         "level": "info",
         "appender-ref": [
