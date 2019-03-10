@@ -3,7 +3,8 @@ package com.avrios.sample.exchange.service.Ecb;
 import com.avrios.sample.exchange.configuration.EcbProperties;
 import com.avrios.sample.exchange.domain.model.ConversionRateContainer;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.Level;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -21,9 +22,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
-import java.util.logging.Level;
 
-@Log
+@Log4j2
 @Service("EcbCurrencyConversionRateXmlParserService")
 @RequiredArgsConstructor
 public class EcbConversionRateXmlParserService {
@@ -38,6 +38,8 @@ public class EcbConversionRateXmlParserService {
      */
     public void process(List<LocalDate> missingDates,
                         String xmlString, BiConsumer<ConversionRateContainer, LocalDate> processor) {
+        log.log(org.apache.logging.log4j.Level.TRACE, "missingDates: {}, xmlString: {}", missingDates, xmlString);
+
         Optional<Document> xmlDocument = getXmlDocument(xmlString);
         if (xmlDocument.isPresent()) {
             Optional<NodeList> dateNodes = getDateNodes(xmlDocument.get());
@@ -119,7 +121,7 @@ public class EcbConversionRateXmlParserService {
             Document document = builder.parse(is);
             return Optional.of(document);
         } catch (Exception e) {
-            log.log(Level.SEVERE, e.toString());
+            log.log(Level.ERROR, e.toString());
         }
 
         return Optional.empty();

@@ -3,6 +3,8 @@ package com.avrios.sample.exchange.service;
 import com.avrios.sample.exchange.configuration.AppProperties;
 import com.avrios.sample.exchange.domain.model.ConversionRateContainer;
 import com.avrios.sample.exchange.util.LocalDateRingBuffer;
+import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.Level;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
+@Log4j2
 @Service("CurrencyConversionRateContainerStore")
 public class ConversionRateContainerStoreImpl implements ConversionRateContainerStore {
     private final AppProperties properties;
@@ -30,17 +33,22 @@ public class ConversionRateContainerStoreImpl implements ConversionRateContainer
     @Override
     public Optional<BigDecimal> getConversionRate(LocalDate date, String fromCurrencyCode, String toCurrencyCode) {
         Optional<ConversionRateContainer> optionalItem = buffer.getItemAtDate(date);
+        Optional<BigDecimal> output = Optional.empty();
 
         if (optionalItem.isPresent()) {
-            return optionalItem.get().getConversionRate(fromCurrencyCode, toCurrencyCode);
+            output = optionalItem.get().getConversionRate(fromCurrencyCode, toCurrencyCode);
         }
 
-        return Optional.empty();
+        log.log(Level.TRACE, "date: {}, fromCurrencyCode: {}, toCurrencyCode: {}, output: {}", date,
+                fromCurrencyCode, toCurrencyCode, output);
+
+        return output;
     }
 
     @Override
     public boolean addConversionRateContainer(ConversionRateContainer container, LocalDate date) {
         Optional<Integer> optionalIndex = buffer.canAddOnDate(date);
+        boolean output = false;
 
         if (optionalIndex.isPresent()) {
             fromCurrencyCodes.addAll(container.getFromCurrencyCodes());
@@ -49,10 +57,12 @@ public class ConversionRateContainerStoreImpl implements ConversionRateContainer
 
             buffer.add(optionalIndex.get(), container);
 
-            return true;
+            output = true;
         }
 
-        return false;
+        log.log(Level.TRACE, "container: {}, date: {}, output: {}", container, date, output);
+
+        return output;
     }
 
     @Override
