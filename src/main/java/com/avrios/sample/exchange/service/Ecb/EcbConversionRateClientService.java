@@ -3,7 +3,8 @@ package com.avrios.sample.exchange.service.Ecb;
 import com.avrios.sample.exchange.configuration.EcbProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.Level;
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ import static org.asynchttpclient.Dsl.asyncHttpClient;
 import static org.asynchttpclient.Dsl.config;
 
 @Service("EcbCurrencyConversionRateClientService")
-@Log
+@Log4j2
 public class EcbConversionRateClientService {
     private final EcbProperties ecbProperties;
 
@@ -50,6 +51,7 @@ public class EcbConversionRateClientService {
      */
     public void retrieveXmlFileDayWindow(Integer amountOfDays, Consumer<String> success, Consumer<String> failure) {
         EcbConversionRateStream stream = getSmallestStreamForDayWindow(amountOfDays);
+        log.log(Level.TRACE, "amountOfDays: {}, stream: {}", amountOfDays, stream);
 
         asyncHttpClient
                 .prepareGet(stream.getUrl())

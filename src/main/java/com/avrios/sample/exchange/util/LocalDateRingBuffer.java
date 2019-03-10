@@ -1,7 +1,7 @@
 package com.avrios.sample.exchange.util;
 
 import lombok.Getter;
-import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -10,7 +10,7 @@ import java.util.stream.IntStream;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
-@Log
+@Log4j2
 public class LocalDateRingBuffer<N> {
     private List<N> slots;
     private Integer head;
@@ -59,6 +59,7 @@ public class LocalDateRingBuffer<N> {
     public void add(Integer index, N item) {
         slots.set(index, item);
         missingSlots.remove(index);
+        log.trace("index: {}, item: {}", index, item);
     }
 
     /**
@@ -81,6 +82,7 @@ public class LocalDateRingBuffer<N> {
         headDate = headDate.plusDays(1);
         if (slots.get(head) != null) missingSlots.add(head);
         slots.set(head, null);
+        log.trace("head: {}, headDate: {}", head, headDate);
     }
 
     public void moveHeadUp(long times) {
