@@ -14,7 +14,18 @@ Here you'll find my implementation of the exercise, to showcase some of my exper
 4. ConversionRateContainerStoreImpl will provides storage functionality on top of LocalDateRingBuffer for context specific operations.
 
 ## How do I start the application?
-`mvn spring-boot:run`
+With maven
+`mvn spring-boot:run` (port 8080)
+
+Or with docker
+`docker-compose up -d` (port 80)
+
+The API call to retrieve a currency conversion rate is a GET request on url:
+`http://localhost:8080/api/euro-currency-conversion/2019-03-08/USD/`
+
+Additionally, it is also possible to specify the currency you want to convert from, although only data for euro is available.
+`http://localhost:8080/api/currency-conversion/2019-03-08/EURO/USD/`
+
 
 ## What are note worthy features?
 1. Storage time complexity: All operations on the LocalDateRingBuffer/ConversionRateContainerStore have O(1) complexity.
@@ -25,10 +36,9 @@ Here you'll find my implementation of the exercise, to showcase some of my exper
 ## What would you do if you would spend more time on this project?
 1. Efficient polling (now it's simply a cronjob)
   - Automaticly determining the update timeframe of the external service.
-2. Run from Docker-compose file
-3. Cloud deployment configuration
-4. SSL certificates
-5. Cronjob: Data consistency check.
-6. End to end test by mocking the external API
+2. Cloud deployment configuration
+3. SSL certificates
+4. Cronjob: Data consistency check.
+5. End to end test by mocking the external API
 
 Feel free to leave a code review :)

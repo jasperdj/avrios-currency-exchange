@@ -1,0 +1,21 @@
+logging.level.org.springframework.web: DEBUG
+
+app:
+  conversion-rate-store.size-in-days: 93
+
+ecb:
+  client:
+    connection-timeout: 5000
+    max-retries: 5
+    streams:
+      - dayWindow: "2"
+        url: "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml"
+      - dayWindow: "90"
+        url: "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml"
+  manager:
+    crawl-cron: "*/10 * * * * *"
+  parser:
+    currency-attribute-name: "currency"
+    default-from-currency-code: "EURO"
+    rate-attribute-name: "rate"
+    time-attribute-name: "time"

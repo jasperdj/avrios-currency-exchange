@@ -1,0 +1,30 @@
+{
+  "configuration": {
+    "name": "log",
+    "appenders": {
+      "Console": {
+        "name": "console",
+        "LevelRangeFilter": {
+          "minLevel": "fatal",
+          "maxLevel": "info",
+          "onMatch": "ACCEPT",
+          "onMismatch": "DENY"
+        },
+        "target": "SYSTEM_OUT",
+        "PatternLayout": {
+          "pattern": "%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"
+        }
+      }
+    },
+    "loggers": {
+      "root": {
+        "level": "info",
+        "appender-ref": [
+          {
+            "ref": "console"
+          }
+        ]
+      }
+    }
+  }
+}

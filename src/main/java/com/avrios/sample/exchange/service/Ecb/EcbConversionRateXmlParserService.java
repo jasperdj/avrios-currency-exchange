@@ -1,8 +1,10 @@
 package com.avrios.sample.exchange.service.Ecb;
 
+import com.avrios.sample.exchange.configuration.EcbProperties;
 import com.avrios.sample.exchange.domain.model.ConversionRateContainer;
-import lombok.extern.java.Log;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.Level;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -20,19 +22,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
-import java.util.logging.Level;
 
-@Log
+@Log4j2
 @Service("EcbCurrencyConversionRateXmlParserService")
+@RequiredArgsConstructor
 public class EcbConversionRateXmlParserService {
-    @Value("${service.EcbConversionRateXmlParserService.timeAttributeName}")
-    private final String timeAttributeName = "time";
-    @Value("${service.EcbConversionRateXmlParserService.currencyAttributeName}")
-    private final String currencyAttributeName = "currency";
-    @Value("${service.EcbConversionRateXmlParserService.rateAttributeName}")
-    private final String rateAttributeName = "rate";
-    @Value("${service.EcbConversionRateXmlParserService.defaultFromCurrencyCode}")
-    private final String defaultFromCurrencyCode = "EURO";
+    private final EcbProperties properties;
 
     /**
      * Process xml
@@ -43,6 +38,8 @@ public class EcbConversionRateXmlParserService {
      */
     public void process(List<LocalDate> missingDates,
                         String xmlString, BiConsumer<ConversionRateContainer, LocalDate> processor) {
+        log.log(org.apache.logging.log4j.Level.TRACE, "missingDates: {}, xmlString: {}", missingDates, xmlString);
+
         Optional<Document> xmlDocument = getXmlDocument(xmlString);
         if (xmlDocument.isPresent()) {
             Optional<NodeList> dateNodes = getDateNodes(xmlDocument.get());
@@ -60,7 +57,7 @@ public class EcbConversionRateXmlParserService {
         int missingDatesIndex = 0;
         for (int i = dateNodes.getLength() - 1; i >= 0; i--) {
             Node dateNode = dateNodes.item(i);
-            String date = getAttr(dateNode, timeAttributeName);
+            String date = getAttr(dateNode, properties.getParser().getTimeAttributeName());
 
             while (thereAreMissingDatesLeft(missingDates, missingDatesIndex) &&
                     dateHasPassedMissingDate(missingDates, missingDatesIndex, date)) {
@@ -89,10 +86,11 @@ public class EcbConversionRateXmlParserService {
     private void extractRates(ConversionRateContainer container, NodeList currencyConversionNodes) {
         for (int i = 0; i < currencyConversionNodes.getLength(); i++) {
             Node currencyConversionNode = currencyConversionNodes.item(i);
-            String toCurrencyCode = getAttr(currencyConversionNode, currencyAttributeName);
-            BigDecimal rate = new BigDecimal(getAttr(currencyConversionNode, rateAttributeName));
+            String toCurrencyCode = getAttr(currencyConversionNode, properties.getParser().getCurrencyAttributeName());
+            BigDecimal rate = new BigDecimal(
+                    getAttr(currencyConversionNode, properties.getParser().getRateAttributeName()));
 
-            container.addConversionRate(defaultFromCurrencyCode, toCurrencyCode, rate);
+            container.addConversionRate(properties.getParser().getDefaultFromCurrencyCode(), toCurrencyCode, rate);
         }
     }
 
@@ -123,7 +121,7 @@ public class EcbConversionRateXmlParserService {
             Document document = builder.parse(is);
             return Optional.of(document);
         } catch (Exception e) {
-            log.log(Level.SEVERE, e.toString());
+            log.log(Level.ERROR, e.toString());
         }
 
         return Optional.empty();
